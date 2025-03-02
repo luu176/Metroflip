@@ -4,6 +4,7 @@
 
 #include "suica_structs_i.h"
 
+// suggestion: rename "suica" to "kotsukei_ic" because not only suica is supported
 
 #define SUICA_RAILWAY_NUM 25 // Don't count Unknown
 
@@ -11,6 +12,9 @@
 // Railway
 
 static const Railway RailwaysList[] = {
+
+    // Kanto Area
+
     // Japan Railway East JRE
     {0x01, {0, 0}, "Keihin Tohoku", 14, SuicaJR, "JK", 0},
     {0x01, {0, 0}, "Tokaido Main", 21, SuicaJR, "JT", 0},
@@ -18,17 +22,6 @@ static const Railway RailwaysList[] = {
     {0x02, {0, 0}, "Utsunomiya", 33, SuicaJR, "JU", 0},
     {0x02, {0, 0}, "Mobile Suica", 1, SuicaMobile, "", 0},
     {0x1D, {0, 0}, "Negishi", 10, SuicaJR, "JK", 0},
-
-    // Tokyo Waterfront Area Rapid Transit TWR
-    {0x82, {0, 0}, "Rinkai", 8, SuicaTWR, "R", &I_Suica_RinkaiR},
-    {0x82, {0, 0}, "Yurikamome", 16, SuicaYurikamome, "U", &I_Suica_YurikamomeU},
-
-    // Tokyo Monorail
-    {0xFA, {0, 0}, "Tokyo Monorail", 11, SuicaTokyoMonorail, "MO", 0},
-
-    // Keikyu
-    {0xD5, {0, 0}, "Keikyu Main", 50, SuicaKeikyu, "KK", &I_Suica_KeikyuKK},
-    {0xD6, {0, 0}, "Keikyu Airport", 6, SuicaKeikyu, "KK", &I_Suica_KeikyuKK},
 
     // Tokyo Metro
     {0xE3, {0, 0}, "Ginza", 19, SuicaTokyoMetro, "G", &I_Suica_GinzaG},
@@ -47,6 +40,22 @@ static const Railway RailwaysList[] = {
     {0xF1, {2, 0}, "Shinjuku", 21, SuicaToei, "S", &I_Suica_ShinjukuS},
     {0xF2, {3, 0}, "Oedo", 26, SuicaToei, "E", &I_Suica_OedoE},
     {0xF3, {3, 0}, "Oedo", 14, SuicaToei, "E", &I_Suica_OedoE},
+
+    // Tokyo Waterfront Area Rapid Transit TWR
+    {0x82, {0, 0}, "Rinkai", 8, SuicaTWR, "R", &I_Suica_RinkaiR},
+
+    // Yurikamome
+    {0x82, {0, 0}, "Yurikamome", 16, SuicaYurikamome, "U", &I_Suica_YurikamomeU},
+
+    // Tokyo Monorail
+    {0xFA, {0, 0}, "Tokyo Monorail", 11, SuicaTokyoMonorail, "MO", 0},
+
+    // Keikyu
+    {0xD5, {0, 0}, "Keikyu Main", 50, SuicaKeikyu, "KK", &I_Suica_KeikyuKK},
+    {0xD6, {0, 0}, "Keikyu Airport", 6, SuicaKeikyu, "KK", &I_Suica_KeikyuKK},
+
+    // Kansai Area
+
     // Unknown
     {0x00, {0, 0}, SUICA_RAILWAY_UNKNOWN_NAME, 1, SuicaRailwayTypeMax, "??", &I_Suica_QuestionMarkBig}
 };
