@@ -45,6 +45,7 @@
 #include <loader/firmware_api/firmware_api.h>
 #include <applications/services/storage/storage.h>
 #include <applications/services/dialogs/dialogs.h>
+#include <lib/nfc/nfc_common.h>
 
 #include "scenes/metroflip_scene.h"
 

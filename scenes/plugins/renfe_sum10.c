@@ -1430,7 +1430,7 @@ static void renfe_sum10_on_enter(Metroflip* app) {
             FlipperFormat* ff = flipper_format_file_alloc(storage);
             if(flipper_format_file_open_existing(ff, app->file_path)) {
                 mfc_data = mf_classic_alloc();
-                mf_classic_load(mfc_data, ff, 2);
+                mf_classic_load(mfc_data, ff, NFC_CURRENT_FORMAT_VERSION);
                 should_free_mfc_data = true;
             }
             flipper_format_free(ff);
@@ -1549,7 +1549,7 @@ static bool renfe_sum10_on_event(Metroflip* app, SceneManagerEvent event) {
                     FlipperFormat* ff = flipper_format_file_alloc(storage);
                     if(flipper_format_file_open_existing(ff, app->file_path)) {
                         mfc_data = mf_classic_alloc();
-                        mf_classic_load(mfc_data, ff, 2);
+                        mf_classic_load(mfc_data, ff, NFC_CURRENT_FORMAT_VERSION);
                         should_free_mfc_data = true;
                     }
                     flipper_format_free(ff);
@@ -1611,7 +1611,7 @@ static bool renfe_sum10_on_event(Metroflip* app, SceneManagerEvent event) {
                     FlipperFormat* ff = flipper_format_file_alloc(storage);
                     if(flipper_format_file_open_existing(ff, app->file_path)) {
                         mfc_data = mf_classic_alloc();
-                        mf_classic_load(mfc_data, ff, 2);
+                        mf_classic_load(mfc_data, ff, NFC_CURRENT_FORMAT_VERSION);
                         should_free_mfc_data = true;
                     }
                     flipper_format_free(ff);
