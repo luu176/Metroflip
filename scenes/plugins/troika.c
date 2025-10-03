@@ -1562,7 +1562,7 @@ static void troika_on_enter(Metroflip* app) {
         FlipperFormat* ff = flipper_format_file_alloc(storage);
         if(flipper_format_file_open_existing(ff, app->file_path)) {
             MfClassicData* mfc_data = mf_classic_alloc();
-            mf_classic_load(mfc_data, ff, 2);
+            mf_classic_load(mfc_data, ff, NFC_CURRENT_FORMAT_VERSION);
             FuriString* parsed_data = furi_string_alloc();
             Widget* widget = app->widget;
 
