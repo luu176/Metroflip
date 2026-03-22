@@ -2,17 +2,17 @@
 
 ### UI Overhaul
 
-- **Custom Main Menu** — Canvas-based menu with per-item icons and animated selection highlights (NFC pulse, save arrow, ticket slide, info pulse, sparkle)
-- **Card View System** — New multi-page scrollable card result display replacing plain text scroll:
+- **Custom Main Menu** - Canvas-based menu with per-item icons and animated selection highlights (NFC pulse, save arrow, ticket slide, info pulse, sparkle)
+- **Card View System** - New multi-page scrollable card result display replacing plain text scroll:
   - Inverted header bar with card title, animated icon, and page indicator
   - Full-width "Label: Value" field rendering with auto line-split for long values
   - Left/Right page navigation, Up/Down scrolling with scrollbar
   - OK=Save / OK=Delete button in footer
   - Random animated icon (train, wallet, ticket, card) assigned per scan
-- **Scan Animation** — Dolphin NFC scan screen with progressive wave animation (waves appear one by one) and animated "Scanning..." text
-- **Supported Cards** — Converted from plain text to scrollable submenu list with 20 cards by name and city
-- **Unsupported Card Scene** — Card view UI with animated X icon, protocol/lock info, and GitHub reporting link
-- **Loading Screen** — "Parsing card data..." popup when loading saved files (no more menu flash)
+- **Scan Animation** - Dolphin NFC scan screen with progressive wave animation (waves appear one by one) and animated "Scanning..." text
+- **Supported Cards** - Converted from plain text to scrollable submenu list with 20 cards by name and city
+- **Unsupported Card Scene** - Card view UI with animated X icon, protocol/lock info, and GitHub reporting link
+- **Loading Screen** - "Parsing card data..." popup when loading saved files (no more menu flash)
 
 ### Plugin Migrations (17/19 plugins)
 
@@ -30,7 +30,7 @@ Suica and Calypso excluded (already have custom UIs).
 ### Memory Safety & Stability
 
 - Fixed null pointer dereference in main menu draw callback (model freed while view active)
-- Fixed card view cleanup order — card view freed by parse scene AFTER plugin unload
+- Fixed card view cleanup order - card view freed by parse scene AFTER plugin unload
 - Fixed double nfc_device_alloc leak in metroflip_alloc
 - Fixed storage file handle leaks in manage_keyfiles (added storage_file_free + furi_record_close)
 - Fixed plugin_manager leak when plugin load fails

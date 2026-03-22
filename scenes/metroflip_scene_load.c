@@ -225,7 +225,7 @@ void metroflip_scene_load_on_enter(void* context) {
     // Scene transitions
     if(app->data_loaded) {
         FURI_LOG_I(TAG, "Data loaded successfully, transitioning to parse scene");
-        // Push Parse directly — no need to go through Start first.
+        // Push Parse directly - no need to go through Start first.
         // Back from Parse uses search_and_switch(Start) which will
         // pop both Parse and Load cleanly.
         scene_manager_next_scene(app->scene_manager, MetroflipSceneParse);

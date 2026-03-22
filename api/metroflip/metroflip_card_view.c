@@ -4,7 +4,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-/* Icon declarations — these are compiled from images/ by ufbt,
+/* Icon declarations - these are compiled from images/ by ufbt,
    not exported via API table (table has a ~200 entry limit). */
 extern const Icon I_Train_10x10;
 extern const Icon I_Train1_10x10;
@@ -79,7 +79,7 @@ static void metroflip_card_view_draw(Canvas* canvas, void* model) {
     canvas_set_font(canvas, FontPrimary);
     canvas_draw_str(canvas, title_x, 10, m->title);
 
-    /* Page indicator — right-aligned in header */
+    /* Page indicator - right-aligned in header */
     if(m->page_count > 1) {
         char pg[8];
         snprintf(pg, sizeof(pg), "%d/%d", m->current_page + 1, m->page_count);
@@ -103,7 +103,7 @@ static void metroflip_card_view_draw(Canvas* canvas, void* model) {
         line++;
     }
 
-    /* Fields — auto-split long "Label: Value" into two lines */
+    /* Fields - auto-split long "Label: Value" into two lines */
     for(uint8_t i = 0; i < page->field_count && i < METROFLIP_CARD_VIEW_MAX_FIELDS; i++) {
         char combined[44];
         snprintf(
@@ -291,7 +291,7 @@ static void card_view_assign_random_icon(MetroflipCardViewModel* m) {
 /* ── Public API ── */
 
 View* metroflip_card_view_alloc(Metroflip* app) {
-    /* The card view is persistent — allocated once and reused.
+    /* The card view is persistent - allocated once and reused.
        If it already exists, just reset the model for the new card. */
     if(app->card_view) {
         with_view_model(

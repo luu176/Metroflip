@@ -13,24 +13,24 @@
  *
  * Fare gate IDs, card types, and general assistance courtesy of the
  * minds behind DEFCON 31's "Boston Infinite Money Glitch" presentation:
- * — Matthew Harris; mattyharris.net <matty@mattyharris.net>
- * — Zachary Bertocchi; zackbertocchi.com <zach@zachbertocci.com>
- * — Scott Campbell; josephscottcampbell.com <scott@josephscottcampbell.com>
- * — Noah Gibson; <noahgibson06@proton.me>
+ * - Matthew Harris; mattyharris.net <matty@mattyharris.net>
+ * - Zachary Bertocchi; zackbertocchi.com <zach@zachbertocci.com>
+ * - Scott Campbell; josephscottcampbell.com <scott@josephscottcampbell.com>
+ * - Noah Gibson; <noahgibson06@proton.me>
  * Talk available at: https://www.youtube.com/watch?v=1JT_lTfK69Q
  *
  * TODOs:
- * — Reverse engineer passes (sectors 4 & 5?), impl.
- * — Infer transaction flag meanings
- * — Infer remaining unknown bytes in the balance sectors (2 & 3)
- * — Improve string output formatting, esp. of transaction log
- * — Mapping of buses to garages, and subsequently, route subsets via
+ * - Reverse engineer passes (sectors 4 & 5?), impl.
+ * - Infer transaction flag meanings
+ * - Infer remaining unknown bytes in the balance sectors (2 & 3)
+ * - Improve string output formatting, esp. of transaction log
+ * - Mapping of buses to garages, and subsequently, route subsets via
  *   http://roster.transithistory.org/ data
- * — Mapping of stations to lines
- * — Add'l data fields for side of station fare gates are on? Some stations
+ * - Mapping of stations to lines
+ * - Add'l data fields for side of station fare gates are on? Some stations
  *   separate inbound & outbound sides, so direction could be inferred
  *   from gates used.
- * — Continually gather data on fare gate ID mappings, update as collected;
+ * - Continually gather data on fare gate ID mappings, update as collected;
  *   check locations this might be scrapable / inferrable from:
  *   [X] MBTA GTFS spec (https://www.mbta.com/developers/gtfs) features & IDs
  *       seem too-coarse-grained & uncorrelated
@@ -43,7 +43,7 @@
  *       (https://cdn.mbta.com/sites/default/files/fmcb-meeting-docs/reports-policies/2014-07-mbta-bluebook-ed14.pdf)
  *       where on pg.40, "Equipment at Stations" is enumerated, and fare gates counts are given,
  *       listed as "AFC Gates" (presumably standing for "Automated Fare Collection")
- *   [X] Josiah Zachery criminal trial public evidence — convicted partially on
+ *   [X] Josiah Zachery criminal trial public evidence - convicted partially on
  *       data on his CharlieCard, appeals partially on basis of legality of this search.
  *       Prev. court case (gag order mentioned in preamble) leaked some data in the files
  *       entered into evidence. Seemingly did not happen here; fare gate IDs unmentioned,
@@ -731,9 +731,9 @@ static Pass
     // same is true of type & end-validity split found in balance sector
     //
     // likely fields incl
-    // — type #,
-    // — a secondary date field (eg start/end, end validity or normal format)
-    // — ID of FVM from which the pass was loaded
+    // - type #,
+    // - a secondary date field (eg start/end, end validity or normal format)
+    // - ID of FVM from which the pass was loaded
 
     // check for empty, if so, return struct filled w/ 0s
     // (incl "valid" field: hence, "valid" is false-y)
@@ -771,19 +771,19 @@ static Transaction
     //
     // Gate ID ("loc") is only the first 13 bits of 0x3:0x5, the final three bits appear to be flags ("f").
     // Least significant flag bit seems to indicate:
-    // — When f & 1 == 1, fare (the amount by which balance is decremented)
-    // — When f & 1 == 0, refill (the amount by which balance is incremented)
+    // - When f & 1 == 1, fare (the amount by which balance is decremented)
+    // - When f & 1 == 0, refill (the amount by which balance is incremented)
     // MSB (sign bit) of amt seems to serve the same role, just inverted, ie
-    // — When amt & 0x8000 == 0, fare
-    // — When amt & 0x8000 == 0x8000, refill
+    // - When amt & 0x8000 == 0, fare
+    // - When amt & 0x8000 == 0x8000, refill
     // Only contradiction between the two observed is on cards w/ passes;
     // MSB of amt seems to be set for every transaction when (remaining bits of) amt is 0 on a card w/ a pass
     // Hence, using f's LSB as method for inferring fare v. refill
     //
     // Remaining unknown bits:
-    // — f & 0b100; seems to be set on fares where the card has a pass, and amt is 0
-    // — f & 0b010
-    // — amt & 1; does not seem to correspond with card type, last transaction, first transaction, refill v. fare, etc
+    // - f & 0b100; seems to be set on fares where the card has a pass, and amt is 0
+    // - f & 0b010
+    // - amt & 1; does not seem to correspond with card type, last transaction, first transaction, refill v. fare, etc
 
     const DateTime date = date_parse(data, sector, block, byte);
     const uint16_t gate = pos_to_num(data, sector, block, byte + 3, 2) >> 3;

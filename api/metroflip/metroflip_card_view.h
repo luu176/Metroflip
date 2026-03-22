@@ -40,7 +40,7 @@ typedef struct {
     bool show_delete;
 } MetroflipCardViewModel;
 
-// Forward declare — full definition is in metroflip_i.h
+// Forward declare - full definition is in metroflip_i.h
 typedef struct Metroflip Metroflip;
 
 #ifdef __cplusplus
@@ -84,7 +84,7 @@ void metroflip_card_view_show(Metroflip* app);
 // Reset card view model (keeps the view alive and registered)
 void metroflip_card_view_free(Metroflip* app);
 
-// Actually free the card view — only call during app exit
+// Actually free the card view - only call during app exit
 void metroflip_card_view_destroy(Metroflip* app);
 
 #ifdef __cplusplus

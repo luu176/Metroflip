@@ -100,7 +100,7 @@ static void start_menu_draw(Canvas* canvas, void* model) {
             canvas_set_color(canvas, ColorBlack);
         }
 
-        /* Icon — animated when selected, static otherwise */
+        /* Icon - animated when selected, static otherwise */
         const Icon* ic;
         if(selected) {
             ic = start_menu_items[idx].anim[m->anim_frame % MENU_ANIM_FRAMES];

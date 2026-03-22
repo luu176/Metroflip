@@ -169,7 +169,7 @@ typedef enum {
     MetroflipViewWidget,
     MetroflipViewUart,
     MetroflipViewCanvas,   /* Used by plugins (e.g. Suica) for custom views */
-    MetroflipViewCardView, /* Persistent card view — never conflicts with plugin views */
+    MetroflipViewCardView, /* Persistent card view - never conflicts with plugin views */
 } MetroflipView;
 
 typedef enum {

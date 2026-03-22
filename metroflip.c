@@ -18,7 +18,7 @@ static bool metroflip_custom_event_callback(void* context, uint32_t event) {
 
 static void metroflip_tick_callback(void* context) {
     Metroflip* app = context;
-    /* Broadcast a tick event — each active scene handles its own animation */
+    /* Broadcast a tick event - each active scene handles its own animation */
     view_dispatcher_send_custom_event(app->view_dispatcher, MetroflipCustomEventTick);
 }
 
@@ -133,7 +133,7 @@ void metroflip_free(Metroflip* app) {
     view_dispatcher_remove_view(app->view_dispatcher, MetroflipViewPopup);
     popup_free(app->popup);
 
-    // Clear callbacks on persistent views BEFORE freeing —
+    // Clear callbacks on persistent views BEFORE freeing -
     // prevents pending GUI/input events from calling unmapped code
     if(app->scan_anim) {
         view_set_draw_callback(app->scan_anim, NULL);
@@ -146,7 +146,7 @@ void metroflip_free(Metroflip* app) {
         view_set_previous_callback(app->main_menu, NULL);
     }
 
-    // Card view (persistent — only destroyed at app exit)
+    // Card view (persistent - only destroyed at app exit)
     metroflip_card_view_destroy(app);
 
     // Scan animation
@@ -390,7 +390,7 @@ KeyfileManager manage_keyfiles(
         }
     }
 
-    /* Single cleanup path — always free file handles and close storage */
+    /* Single cleanup path - always free file handles and close storage */
     storage_file_close(source);
     storage_file_close(dest);
     storage_file_free(source);

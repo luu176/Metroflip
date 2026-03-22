@@ -375,7 +375,7 @@ static bool intertic_display_card_view(const St25tbData* data, Metroflip* app, b
         metroflip_card_view_add_field(view, p, "End Date", val, false);
     }
 
-    /* Usage pages — add full details for each usage buffer */
+    /* Usage pages - add full details for each usage buffer */
     if(entry && entry->usage) {
         /* Helper: add usage detail pages for one usage buffer */
         for(int ab = 0; ab < 2; ab++) {
