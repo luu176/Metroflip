@@ -64,12 +64,27 @@ void metroflip_scene_parse_on_enter(void* context) {
     // Try loading the plugin
     if(plugin_manager_load_single(app->plugin_manager, path) != PluginManagerErrorNone) {
         FURI_LOG_E(TAG, "Failed to load parse plugin");
-        popup_set_header(popup, "Plugin load\nfailed!", 68, 30, AlignLeft, AlignTop);
         /* Clean up the allocated but unused plugin manager */
         plugin_manager_free(app->plugin_manager);
         composite_api_resolver_free(app->resolver);
         app->plugin_manager = NULL;
         app->resolver = NULL;
+        /* Show error with Exit button */
+        Widget* widget = app->widget;
+        widget_reset(widget);
+        FuriString* s = furi_string_alloc();
+        furi_string_printf(
+            s,
+            "\e#Plugin Load Failed\n\n"
+            "Card: %s\n"
+            "Try reinstalling the\n"
+            "app with fresh plugins.",
+            app->card_type);
+        widget_add_text_scroll_element(widget, 0, 0, 128, 64, furi_string_get_cstr(s));
+        widget_add_button_element(
+            widget, GuiButtonTypeRight, "Exit", metroflip_exit_widget_callback, app);
+        furi_string_free(s);
+        view_dispatcher_switch_to_view(app->view_dispatcher, MetroflipViewWidget);
         return;
     }
 
