@@ -14,6 +14,11 @@
 #include <lib/nfc/protocols/iso14443_4a/iso14443_4a_poller.h>
 #include "../api/metroflip/metroflip_api.h"
 
+/* Icon declarations (compiled from images/, not in API table) */
+extern const Icon I_DolphinScan1_97x61;
+extern const Icon I_DolphinScan2_97x61;
+extern const Icon I_DolphinScan3_97x61;
+
 #define TAG "Metroflip:Scene:Auto"
 
 /* ── Scan animation ── */
@@ -23,6 +28,14 @@ typedef struct {
     const char* status;
 } ScanAnimModel;
 
+/* Dolphin frames: no waves -> 1 wave -> 2 waves -> all 3 waves (original) */
+static const Icon* dolphin_scan_frames[] = {
+    &I_DolphinScan1_97x61,
+    &I_DolphinScan2_97x61,
+    &I_DolphinScan3_97x61,
+    &I_RFIDDolphinReceive_97x61,
+};
+
 static void scan_anim_draw(Canvas* canvas, void* model) {
     if(!model) return;
     ScanAnimModel* m = (ScanAnimModel*)model;
@@ -30,8 +43,8 @@ static void scan_anim_draw(Canvas* canvas, void* model) {
     canvas_set_bitmap_mode(canvas, true);
     canvas_set_color(canvas, ColorBlack);
 
-    /* Draw dolphin */
-    canvas_draw_icon(canvas, 0, 3, &I_RFIDDolphinReceive_97x61);
+    /* Draw dolphin with progressive waves */
+    canvas_draw_icon(canvas, 0, 3, dolphin_scan_frames[m->frame % 4]);
 
     /* Status text with animated dots */
     canvas_set_font(canvas, FontPrimary);
@@ -207,16 +220,14 @@ void metroflip_scene_auto_on_enter(void* context) {
 
     app->sec_num = 0;
 
-    /* Allocate scan animation view on first use */
-    if(!app->scan_anim) {
-        app->scan_anim = view_alloc();
-        view_set_context(app->scan_anim, app);
-        view_allocate_model(app->scan_anim, ViewModelTypeLockFree, sizeof(ScanAnimModel));
-        view_dispatcher_add_view(app->view_dispatcher, MetroflipViewLoading, app->scan_anim);
-    }
+    /* Configure scan animation view (allocated in metroflip_alloc) */
     view_set_draw_callback(app->scan_anim, scan_anim_draw);
     view_set_input_callback(app->scan_anim, scan_anim_input);
     view_set_previous_callback(app->scan_anim, scan_anim_previous);
+
+    if(!view_get_model(app->scan_anim)) {
+        view_allocate_model(app->scan_anim, ViewModelTypeLockFree, sizeof(ScanAnimModel));
+    }
     with_view_model(
         app->scan_anim,
         ScanAnimModel * m,

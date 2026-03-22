@@ -95,7 +95,11 @@ Metroflip* metroflip_alloc() {
     view_set_context(app->main_menu, app);
     view_dispatcher_add_view(app->view_dispatcher, MetroflipViewMenu, app->main_menu);
 
-    app->scan_anim = NULL;
+    // Scan animation view (callbacks set in auto scene)
+    app->scan_anim = view_alloc();
+    view_set_context(app->scan_anim, app);
+    view_dispatcher_add_view(app->view_dispatcher, MetroflipViewLoading, app->scan_anim);
+
     app->data_loaded = false;
     app->card_view = NULL;
     return app;
@@ -145,12 +149,10 @@ void metroflip_free(Metroflip* app) {
     // Card view (persistent - only destroyed at app exit)
     metroflip_card_view_destroy(app);
 
-    // Scan animation (may be NULL if never entered scan scene)
-    if(app->scan_anim) {
-        view_dispatcher_remove_view(app->view_dispatcher, MetroflipViewLoading);
-        view_free_model(app->scan_anim);
-        view_free(app->scan_anim);
-    }
+    // Scan animation
+    view_dispatcher_remove_view(app->view_dispatcher, MetroflipViewLoading);
+    view_free_model(app->scan_anim);
+    view_free(app->scan_anim);
 
     // Custom main menu
     view_dispatcher_remove_view(app->view_dispatcher, MetroflipViewMenu);
