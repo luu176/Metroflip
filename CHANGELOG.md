@@ -1,4 +1,4 @@
-## v1.1-beta.2
+## v2-beta.2
 
 ### Bug Fixes
 
@@ -6,7 +6,7 @@
 - **Navigo/Calypso AID selection** - Fixed newer Navigo cards that reject the legacy CLA 0x94 class byte. Now performs an upfront ISO 7816 SELECT APPLICATION by AID (partial RID, then full Navigo AID) before falling back to Calypso native commands.
 - **Unknown card scene** - Added tick event handling for card view animation on the unsupported card screen.
 
-## v1.1
+## v2
 
 ### UI Overhaul
 
