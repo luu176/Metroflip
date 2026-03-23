@@ -1,3 +1,11 @@
+## v1.1-beta.2
+
+### Bug Fixes
+
+- **Suica/FeliCa crash fix** - Fixed crash when reading Suica cards with many services. The FeliCa poller was traversing all 60+ services on the card, exhausting memory. Now reads only the needed history blocks directly via `felica_poller_read_blocks`, avoiding the full traversal.
+- **Navigo/Calypso AID selection** - Fixed newer Navigo cards that reject the legacy CLA 0x94 class byte. Now performs an upfront ISO 7816 SELECT APPLICATION by AID (partial RID, then full Navigo AID) before falling back to Calypso native commands.
+- **Unknown card scene** - Added tick event handling for card view animation on the unsupported card screen.
+
 ## v1.1
 
 ### UI Overhaul
