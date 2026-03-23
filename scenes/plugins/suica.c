@@ -410,12 +410,7 @@ static NfcCommand suica_poller_callback(NfcGenericEvent event, void* context) {
         // all 60+ services (which exhausts memory and crashes).
         FelicaPoller* poller = (FelicaPoller*)event.instance;
         SuicaHistoryViewModel* model = view_get_model(app->suica_context->view_history);
-        Widget* widget = app->widget;
         FuriString* parsed_data = furi_string_alloc();
-
-        dolphin_deed(DolphinDeedNfcRead);
-        view_dispatcher_send_custom_event(app->view_dispatcher, MetroflipCustomEventPollerSuccess);
-        metroflip_app_blink_stop(app);
 
         nfc_device_set_data(app->nfc_device, NfcProtocolFelica, nfc_poller_get_data(app->poller));
 
@@ -509,22 +504,14 @@ static NfcCommand suica_poller_callback(NfcGenericEvent event, void* context) {
             }
         }
 
-        widget_add_text_scroll_element(widget, 0, 0, 128, 64, furi_string_get_cstr(parsed_data));
-
-        if(suica_found) {
-            widget_add_button_element(
-                widget, GuiButtonTypeCenter, "Parse", suica_parse_detail_callback, app);
-        }
-
-        widget_add_button_element(
-            widget, GuiButtonTypeRight, "Exit", metroflip_exit_widget_callback, app);
-        widget_add_button_element(
-            widget, GuiButtonTypeLeft, "Save", metroflip_save_widget_callback, app);
-
-        view_dispatcher_switch_to_view(app->view_dispatcher, MetroflipViewWidget);
-        furi_string_free(parsed_data);
+        // Store parsed data and result in context for the main thread to build the UI
+        app->suica_context->parsed_data = parsed_data;
+        app->suica_context->suica_found = suica_found;
 
         FURI_LOG_I(TAG, "Manual read complete, stopping poller");
+        dolphin_deed(DolphinDeedNfcRead);
+        metroflip_app_blink_stop(app);
+        view_dispatcher_send_custom_event(app->view_dispatcher, MetroflipCustomEventPollerSuccess);
         return NfcCommandStop;
     }
 
@@ -717,7 +704,31 @@ static bool suica_on_event(Metroflip* app, SceneManagerEvent event) {
     bool consumed = false;
     Popup* popup = app->popup;
     if(event.type == SceneManagerEventTypeCustom) {
-        if(event.event == MetroflipCustomEventCardDetected) {
+        if(event.event == MetroflipCustomEventPollerSuccess) {
+            // Build widget on main thread using data prepared by poller callback
+            Widget* widget = app->widget;
+            FuriString* parsed_data = app->suica_context->parsed_data;
+            bool suica_found = app->suica_context->suica_found;
+
+            widget_add_text_scroll_element(
+                widget, 0, 0, 128, 64, furi_string_get_cstr(parsed_data));
+
+            if(suica_found) {
+                widget_add_button_element(
+                    widget, GuiButtonTypeCenter, "Parse", suica_parse_detail_callback, app);
+            }
+
+            widget_add_button_element(
+                widget, GuiButtonTypeRight, "Exit", metroflip_exit_widget_callback, app);
+            widget_add_button_element(
+                widget, GuiButtonTypeLeft, "Save", metroflip_save_widget_callback, app);
+
+            view_dispatcher_switch_to_view(app->view_dispatcher, MetroflipViewWidget);
+
+            furi_string_free(parsed_data);
+            app->suica_context->parsed_data = NULL;
+            consumed = true;
+        } else if(event.event == MetroflipCustomEventCardDetected) {
             popup_set_header(popup, "DON'T\nMOVE", 68, 30, AlignLeft, AlignTop);
             consumed = true;
         } else if(event.event == MetroflipCustomEventCardLost) {
@@ -746,6 +757,10 @@ static bool suica_on_event(Metroflip* app, SceneManagerEvent event) {
 
 static void suica_on_exit(Metroflip* app) {
     widget_reset(app->widget);
+    if(app->suica_context->parsed_data) {
+        furi_string_free(app->suica_context->parsed_data);
+        app->suica_context->parsed_data = NULL;
+    }
     with_view_model(
         app->suica_context->view_history,
         SuicaHistoryViewModel * model,
