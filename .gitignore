@@ -6,3 +6,5 @@ dist/*
 .env
 .ufbt
 .claude/settings.local.json
+.DS_Store
+**/.DS_Store

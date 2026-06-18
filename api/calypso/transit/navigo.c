@@ -127,10 +127,12 @@ const char* get_zones(int* zones) {
 
 char* get_token(char* psrc, const char* delimit, void* psave) {
     static char sret[64];
-    register char* ptr = psave;
+    char* ptr = psave;
     memset(sret, 0, sizeof(sret));
 
-    if(psrc != NULL) strcpy(ptr, psrc);
+    // Callers pass the same buffer as psrc and psave: strcpy with overlapping
+    // src/dst is undefined behavior, so use memmove (and skip the no-op copy).
+    if(psrc != NULL && psrc != ptr) memmove(ptr, psrc, strlen(psrc) + 1);
     if(ptr == NULL) return NULL;
 
     int i = 0, nlength = strlen(ptr);
@@ -140,9 +142,18 @@ char* get_token(char* psrc, const char* delimit, void* psave) {
             ptr = NULL;
             break;
         }
-        sret[i] = ptr[i];
+        if(i < (int)sizeof(sret) - 1) sret[i] = ptr[i];
     }
-    if(ptr != NULL) strcpy(ptr, &ptr[i + 1]);
+    if(ptr != NULL) {
+        if(i < nlength) {
+            // Consume the token and its delimiter (overlapping shift-left).
+            memmove(ptr, &ptr[i + 1], strlen(&ptr[i + 1]) + 1);
+        } else {
+            // No delimiter found: the whole string was consumed. The old
+            // strcpy(ptr, &ptr[i + 1]) read past the end of the buffer here.
+            ptr[0] = '\0';
+        }
+    }
 
     return sret;
 }
@@ -157,7 +168,7 @@ char* get_navigo_station(
         if(station_group_id < 77 && station_id < 19) {
             char* file_path = malloc(256 * sizeof(char));
             if(!file_path) {
-                return "Unknown";
+                return strdup("Unknown");
             }
             snprintf(
                 file_path,
@@ -201,6 +212,7 @@ char* get_navigo_station(
             furi_string_free(line);
             file_stream_close(stream);
             stream_free(stream);
+            furi_record_close(RECORD_STORAGE);
             free(file_path);
 
             if(found_station_name) {
@@ -210,7 +222,7 @@ char* get_navigo_station(
         // cast station_group_id-station_id-station_sub_id to a string
         char* station = malloc(12);
         if(!station) {
-            return "Unknown";
+            return strdup("Unknown");
         }
         snprintf(station, 12, "%d-%d-%d", station_group_id, station_id, station_sub_id);
         return station;
@@ -218,7 +230,7 @@ char* get_navigo_station(
     case TRAM: {
         char* file_path = malloc(256 * sizeof(char));
         if(!file_path) {
-            return "Unknown";
+            return strdup("Unknown");
         }
         snprintf(
             file_path,
@@ -261,6 +273,7 @@ char* get_navigo_station(
         furi_string_free(line);
         file_stream_close(stream);
         stream_free(stream);
+        furi_record_close(RECORD_STORAGE);
         free(file_path);
 
         if(found_station_name) {
@@ -270,7 +283,7 @@ char* get_navigo_station(
         // cast station_group_id-station_id-station_sub_id to a string
         char* station = malloc(12);
         if(!station) {
-            return "Unknown";
+            return strdup("Unknown");
         }
         if(station_sub_id != 0) {
             snprintf(station, 12, "%d-%d-%d", station_group_id, station_id, station_sub_id);
@@ -285,7 +298,7 @@ char* get_navigo_station(
         if(station_group_id < 32 && station_id < 16) {
             char* file_path = malloc(256 * sizeof(char));
             if(!file_path) {
-                return "Unknown";
+                return strdup("Unknown");
             }
             snprintf(
                 file_path,
@@ -327,6 +340,7 @@ char* get_navigo_station(
             furi_string_free(line);
             file_stream_close(stream);
             stream_free(stream);
+            furi_record_close(RECORD_STORAGE);
             free(file_path);
 
             if(found_station_name) {
@@ -336,7 +350,7 @@ char* get_navigo_station(
         // cast station_group_id-station_id to a string
         char* station = malloc(12);
         if(!station) {
-            return "Unknown";
+            return strdup("Unknown");
         }
         if(station_sub_id != 0) {
             snprintf(station, 12, "%d-%d-%d", station_group_id, station_id, station_sub_id);
@@ -351,7 +365,7 @@ char* get_navigo_station(
         // cast station_group_id-station_id to a string
         char* station = malloc(12);
         if(!station) {
-            return "Unknown";
+            return strdup("Unknown");
         }
         if(station_sub_id != 0) {
             snprintf(station, 12, "%d-%d-%d", station_group_id, station_id, station_sub_id);
